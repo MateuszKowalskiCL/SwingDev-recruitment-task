@@ -1,39 +1,68 @@
 @import "reset.css";
 
+body {
+  font-family: 'Open Sans', sans-serif;
+
+}
+
 .gallery {
-  width: 700px;
   display: flex;
-  flex-direction: column;
-  justify-content: space-around;
+  flex-direction: row;
+  justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  background-color: grey
+}
+
+.loading-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+
+.list-of-images {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .post {
-  width: 250px;
   background-color: white;
-  border-radius: 10px;
-  box-shadow: 2px 2px grey;
   margin-bottom: 20px;
+  position: relative;
+  box-shadow: 0px 13px 21px -7px rgba(0, 0, 0, 0.3);;
+}
+
+.img-wrapper {
+  min-height: 250px;
+  min-width: 250px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .post-image {
-  width: 100%;
-  height: 200px;
   object-fit: cover;
-  border-radius: 10px 10px 0 0;
 }
 
-.post-data {
-  width: 100%;
+.post-main-data {
+  padding-left: 10px;
+  min-height: 80px;
+  max-width: 300px;
   h3 {
     line-height: 25px;
     vertical-align: middle;
-    text-align: center;
-    background-color: wheat;
-    border-radius: 0 0 10px 10px;
   }
-  span {
-    min-height: 150px;
-    text-align: center;
+  .holder {
+    font-weight: 900;
+
   }
+}
+
+.data-description {
+  max-width: 300px;
+  margin-bottom: 10px;
 }

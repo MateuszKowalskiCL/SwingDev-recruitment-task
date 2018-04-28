@@ -36,6 +36,8 @@
   "dependencies": {
     "@types/react": "^16.0.34",
     "es6-promise": "^4.2.4",
+    "react-loading-animation": "^1.4.0",
+    "react-native-image-progress": "^1.1.0",
     "whatwg-fetch": "^2.0.4"
   }
 }

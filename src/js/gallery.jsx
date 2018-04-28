@@ -3,9 +3,8 @@ import React from "react";
 //imports
 import Photo from "./photo.jsx";
 
-const promise = new Promise((resolve, reject) => {
-
-});
+const promise = new Promise((resolve, reject) => {});
+const Loading = require('react-loading-animation');
 
 class Gallery extends React.Component {
     constructor(props) {
@@ -13,18 +12,19 @@ class Gallery extends React.Component {
         this.state = {
             arrayOfUrls: [],
             isLoading: false,
-            error: null
+            error: null,
+            isLoadingGallery: true
         }
 
     }
 
     componentDidMount () {
-        //set loading
+        //set loading animation
         this.setState({
             isLoading: true
         });
 
-        // fetch main API with dog pictures
+        //fetch main API with dog pictures
         fetch("https://api.flickr.com/services/rest/?&method=flickr.groups.pools.getPhotos&api_key=b6caa427a3ef1d1d7474fed00902e930&group_id=467849@N23&format=json&nojsoncallback=1").then(resp => {
             if (resp.ok) {
                 return resp;
@@ -32,38 +32,45 @@ class Gallery extends React.Component {
                 throw new Error('Something went wrong ...');
             }
         }).then( resp => { resp.json().then( pic => {
-                    //map all the photos in response
+                    //map all the photos in the response
                     pic.photos.photo.map ( (element, index) => {
 
                         //assign author to const
                         const author = element.ownername;
 
                         //assign title to const
-                        const title = element.title;
+                        let title = element.title;
 
-                        // create API for author
-                        const authorId = "https://api.flickr.com/services/rest/?&method=flickr.people.getInfo&api_key=b6caa427a3ef1d1d7474fed00902e930&user_id=" + element.owner + "&format=json&nojsoncallback=1";
-
-                        // create API for picture
+                        //create API for picture
                         const pictureId = "https://api.flickr.com/services/rest/?&method=flickr.photos.getInfo&api_key=b6caa427a3ef1d1d7474fed00902e930&photo_id=" + element.id + "&format=json&nojsoncallback=1";
 
-                        // fetch description
+                        //fetch description for picture API
                         fetch(pictureId).then( resp => { resp.json().then( picture => {
 
                             //assign description to const
-                            const description = picture.photo.description._content;
+                            let description = picture.photo.description._content;
 
                             //assign date to const
                             const date = picture.photo.dates.taken;
 
-                            //building the url adress for jpg
-                            let elementId = element.farm;
-                            let serverId = element.server;
-                            let id = element.id;
-                            let secret = element.secret;
+                            //build the url adress for jpg
+                            const elementId = element.farm;
+                            const serverId = element.server;
+                            const id = element.id;
+                            const secret = element.secret;
 
-                            //creating object with all necessary data for the post
-                            let post = {
+                            //override lack of title
+                            if (title === "") {
+                                title = "no title was not provided"
+                            }
+
+                            //override lack of description
+                            if(description === "") {
+                               description = "description was not provided"
+                            }
+
+                            //create object with all necessary data for the post
+                            const post = {
                                 author: author,
                                 url: "https://farm" + elementId + '.staticflickr.com/' + serverId + '/' + id + '_' + secret + ".jpg",
                                 title: title,
@@ -71,7 +78,7 @@ class Gallery extends React.Component {
                                 date: date
                             };
 
-                            //injecting object into array
+                            //inject object into array and kill loading animation
                             this.setState({
                                 isLoading: false,
                                 arrayOfUrls: [...this.state.arrayOfUrls, post]
@@ -85,12 +92,17 @@ class Gallery extends React.Component {
 
 
     //render response or loader
-    renderResponse = (array, bol) => {
+    renderResponse = (array, bol, error) => {
+        if (error) {
+            return <p>{error.message}</p>;
+        }
         if (bol) {
-            return <div>Shieeet is Loading...</div>
+            return <div className = "loading-wrapper">
+                <Loading/>
+            </div>
         } else {
             return (
-                <div>
+                <ul className = "list-of-images">
                     {array.map( (e,i) => {
                        return <Photo
                             key = {i}
@@ -101,15 +113,31 @@ class Gallery extends React.Component {
                             date = {e.date}
                         />
                     })}
-                </div>
+                </ul>
             )
         }
     };
 
+    hideSpinner = () => {
+        this.setState({
+            isLoadingGallery: false,
+            display: "block"
+        })
+    };
+
+    loadSpinner = () => {
+        if (this.state.isLoading === true) {
+            return <Loading className= "a"/>
+        } else {
+            return null;
+        }
+    };
+
+
     render () {
-        const { arrayOfUrls, isLoading } = this.state;
+        const { arrayOfUrls, isLoading, error } = this.state;
        return <div className = "gallery">
-           {this.renderResponse(arrayOfUrls, isLoading)}
+           {this.renderResponse(arrayOfUrls, isLoading, error)}
         </div>
     }
 }

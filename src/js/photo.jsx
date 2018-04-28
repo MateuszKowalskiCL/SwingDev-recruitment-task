@@ -1,10 +1,13 @@
 import React from "react";
 
+const Loading = require('react-loading-animation');
+
 class Photo extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-
+           isLoading: true,
+           display: "none"
         }
     }
 
@@ -12,17 +15,38 @@ class Photo extends React.Component {
         return {__html: this.props.description};
     };
 
+    hideSpinner = () => {
+        this.setState({
+            isLoading: false,
+            display: "block"
+        })
+    };
+
+    loadSpinner = () => {
+      if (this.state.isLoading === true) {
+          return <Loading className= "a"/>
+      } else {
+          return null;
+      }
+    };
     render () {
         return <div className = "post">
-            <img className = "post-image" src = {this.props.url} alt = {this.props.id} />
-            <div className = "post-data">
-                <h3>{this.props.author}</h3>
-                <span>{this.props.title}</span>
-                <span>{this.props.date}</span>
-                <p dangerouslySetInnerHTML = {this.addElement()}></p>
+            <div className = "img-wrapper">
+                {this.loadSpinner()}
+                <img style = {{display:this.state.display}} className = "post-image" src = {this.props.url} alt = {this.props.id} onLoad={() => this.hideSpinner()}/>
+            </div>
+            <div className = "post-main-data">
+                <h3> <span className = "holder">Author: </span>{this.props.author}</h3>
+                <div> <span className = "holder">Title: </span>{this.props.title}</div>
+                <div> <span className = "holder">Date: </span>{this.props.date}</div>
+                <p className = "data-description">
+                    <span className = "holder">Description: </span>
+                    <span dangerouslySetInnerHTML = {this.addElement()}></span>
+                </p>
             </div>
         </div>
     }
 }
 
 export default Photo;
+
