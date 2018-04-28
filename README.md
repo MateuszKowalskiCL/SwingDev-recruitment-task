@@ -2,4 +2,8 @@
 
 ## Getting Started
 
-npm install then npm start 
+npm install 
+
+.then
+
+npm start 
