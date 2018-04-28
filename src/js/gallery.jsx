@@ -83,7 +83,7 @@ class Gallery extends React.Component {
                                 isLoading: false,
                                 arrayOfUrls: [...this.state.arrayOfUrls, post]
                             })
-                        })})
+                        })}).catch(error => this.setState({ error, isLoading: false }));
                     })
              });
 

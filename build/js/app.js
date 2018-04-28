@@ -20428,6 +20428,8 @@ var Gallery = function (_React$Component) {
                                     arrayOfUrls: [].concat(_toConsumableArray(_this2.state.arrayOfUrls), [post])
                                 });
                             });
+                        }).catch(function (error) {
+                            return _this2.setState({ error: error, isLoading: false });
                         });
                     });
                 });
